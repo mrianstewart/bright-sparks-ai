@@ -108,12 +108,16 @@
       btn.innerHTML = 'Sending…';
 
       try {
-        const body = new URLSearchParams({ email_address: email });
-        const res  = await fetch(KIT_ENDPOINT(formId), {
+        const body       = new URLSearchParams({ email_address: email });
+        const controller = new AbortController();
+        const timeout    = setTimeout(() => controller.abort(), 8000);
+        const res        = await fetch(KIT_ENDPOINT(formId), {
           method:  'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body,
+          signal: controller.signal,
         });
+        clearTimeout(timeout);
 
         if (res.ok || res.status === 200 || res.status === 201) {
           showSuccess(formEl, successEl);
@@ -150,14 +154,3 @@
 })();
 
 
-/* ─── Smooth anchor scroll (supplement for older browsers) ── */
-(function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', e => {
-      const target = document.querySelector(link.getAttribute('href'));
-      if (!target) return;
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-})();
