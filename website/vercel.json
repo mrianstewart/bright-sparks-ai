@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/roast-machine/:path*",
-      "destination": "https://roast-machine-mu.vercel.app/roast-machine/:path*"
+      "source": "/roast-machine",
+      "destination": "https://roast-machine-mu.vercel.app/roast-machine"
+    },
+    {
+      "source": "/roast-machine/(.*)",
+      "destination": "https://roast-machine-mu.vercel.app/roast-machine/$1"
     }
   ]
 }
