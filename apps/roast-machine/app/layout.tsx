@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://brightsparks.ai/roast-machine/opengraph-image",
+        url: "https://brightsparks.ai/roast-machine/og-image.png",
         width: 1200,
         height: 630,
         alt: "The Roast Machine — Get your website brutally critiqued by AI judges",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Roast Machine — Get your website brutally critiqued by AI judges",
     description: "Paste any website URL. Three AI judges will tear it apart — design, copy, and conversion. Free, instant, and merciless.",
-    images: ["https://brightsparks.ai/roast-machine/opengraph-image"],
+    images: ["https://brightsparks.ai/roast-machine/og-image.png"],
   },
 };
 
