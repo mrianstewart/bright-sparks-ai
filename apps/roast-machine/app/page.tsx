@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface Judge {
   name: string;
@@ -49,9 +49,62 @@ function overallScoreColour(score: number) {
   return 'text-emerald-400';
 }
 
+const LOADING_MESSAGES = [
+  'The judges are reviewing your site…',
+  'Valentina is sighing audibly…',
+  'Marcus is checking your bounce rate…',
+  'Sage is getting a bad feeling about this…',
+  'Someone is being paged from the green room…',
+  'The judges are arguing about fonts…',
+  'Marcus just said "funnel" for the fourth time…',
+  'Valentina has requested a moment…',
+  'Sage would not hand over her credit card right now…',
+  'The judges are sharpening their pencils…',
+  'Someone just said "Who approved this?"…',
+  'A/B test results are being consulted…',
+  'The vibe is being checked…',
+];
+
+function randomIndex(exclude: number) {
+  let next: number;
+  do { next = Math.floor(Math.random() * LOADING_MESSAGES.length); } while (next === exclude);
+  return next;
+}
+
+const FADE_MS = 200;
+
+function useRotatingMessage(active: boolean, intervalMs = 2750) {
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!active) {
+      setIndex(0);
+      setVisible(true);
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+    setIndex(randomIndex(-1));
+    setVisible(true);
+    timerRef.current = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIndex(i => randomIndex(i));
+        setVisible(true);
+      }, FADE_MS);
+    }, intervalMs);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [active, intervalMs]);
+
+  return { message: LOADING_MESSAGES[index], visible };
+}
+
 function buildShareText(result: RoastResult, url: string) {
   const [valentina, marcus, sage] = result.judges;
-  return `🔥 The Roast Machine just reviewed ${url} — ${valentina.name} gave it ${valentina.score}/10 for design, ${marcus.name} gave it ${marcus.score}/10 for growth, and ${sage.name} gave it ${sage.score}/10 for vibes. Get your site roasted → brightsparks.ai/roast`;
+  return `🔥 The Roast Machine just reviewed ${url} — ${valentina.name} gave it ${valentina.score}/10 for design, ${marcus.name} gave it ${marcus.score}/10 for growth, and ${sage.name} gave it ${sage.score}/10 for vibes. Get your site roasted → brightsparks.ai/roast-machine`;
 }
 
 function ShareAndReset({
@@ -239,7 +292,9 @@ function RoastResults({
 export default function Home() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingKey, setLoadingKey] = useState(0);
   const [error, setError] = useState('');
+  const { message: loadingMessage, visible: messageVisible } = useRotatingMessage(loading);
   const [result, setResult] = useState<RoastResult | null>(null);
   const [submittedUrl, setSubmittedUrl] = useState('');
 
@@ -271,6 +326,7 @@ export default function Home() {
 
     setError('');
     setResult(null);
+    setLoadingKey(k => k + 1);
     setLoading(true);
 
     try {
@@ -329,9 +385,27 @@ export default function Home() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-orange-500 px-5 py-4 font-bold text-white text-base transition-all hover:bg-orange-400 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+            className="w-full rounded-xl px-5 py-4 font-bold text-white text-base transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100"
+            style={loading ? {
+              backgroundImage: 'linear-gradient(#ea580c, #ea580c)',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'left center',
+              backgroundColor: '#431407',
+              animation: `progress-fill 20s linear forwards`,
+              animationDelay: '0ms',
+            } : {
+              backgroundColor: '#ea580c',
+            }}
+            key={loadingKey}
           >
-            {loading ? 'The judges are deliberating…' : 'Roast This Site 🔥'}
+            <span
+              style={{
+                opacity: loading ? (messageVisible ? 1 : 0) : 1,
+                transition: `opacity ${FADE_MS}ms ease`,
+              }}
+            >
+              {loading ? loadingMessage : 'Roast This Site 🔥'}
+            </span>
           </button>
         </form>
 
