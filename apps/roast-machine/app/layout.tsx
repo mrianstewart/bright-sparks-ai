@@ -23,11 +23,20 @@ export const metadata: Metadata = {
     url: "https://brightsparks.ai/roast-machine",
     siteName: "Bright Sparks AI",
     type: "website",
+    images: [
+      {
+        url: "https://brightsparks.ai/roast-machine/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "The Roast Machine — Get your website brutally critiqued by AI judges",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "The Roast Machine — Get your website brutally critiqued by AI judges",
     description: "Paste any website URL. Three AI judges will tear it apart — design, copy, and conversion. Free, instant, and merciless.",
+    images: ["https://brightsparks.ai/roast-machine/opengraph-image"],
   },
 };
 
