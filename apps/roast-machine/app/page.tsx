@@ -102,7 +102,7 @@ function useRotatingMessage(active: boolean, intervalMs = 2750) {
   return { message: LOADING_MESSAGES[index], visible };
 }
 
-const SUBSTACK_URL = 'https://brightsparksai.substack.com';
+const KIT_LANDING_URL = 'https://bright-sparks-ai.kit.com/f7a89bc8ec';
 const KIT_FORM_URL = 'https://app.kit.com/forms/9288290/subscriptions';
 
 function EmailCapture() {
@@ -432,16 +432,8 @@ export default function Home() {
         <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight mb-4 leading-none">
           The Roast Machine
         </h1>
-        <p className="text-lg text-slate-400 mb-3 leading-relaxed">
+        <p className="text-lg text-slate-400 mb-10 leading-relaxed">
           Paste any website URL. Three AI judges will tear it apart.
-        </p>
-        <p className="text-sm text-slate-600 mb-10">
-          Part of{' '}
-          <a href="https://brightsparks.ai" className="text-slate-500 hover:text-slate-400 transition-colors">Bright Sparks AI</a>
-          {' '}— new tools every week.{' '}
-          <a href="https://brightsparks.ai/#subscribe" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-400 transition-colors underline underline-offset-2">
-            Subscribe →
-          </a>
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
