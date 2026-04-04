@@ -40,7 +40,37 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-slate-950">
+        <header className="w-full px-6 py-4 flex items-center">
+          <a
+            href="https://brightsparks.ai"
+            className="flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <img src="/roast-machine/logo.svg" alt="Bright Sparks AI" width={14} height={22} />
+            <span className="text-sm font-semibold text-slate-300 tracking-tight">Bright Sparks AI</span>
+          </a>
+        </header>
+
+        <div className="flex-1">{children}</div>
+
+        <footer className="w-full px-6 py-6 text-center">
+          <p className="text-xs text-slate-600">
+            Made by{' '}
+            <a href="https://brightsparks.ai" className="text-slate-500 hover:text-slate-400 transition-colors">
+              Bright Sparks AI
+            </a>
+            {' '}— I build a new AI tool every week.{' '}
+            <a
+              href="https://brightsparksai.substack.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-500 hover:text-slate-400 transition-colors underline underline-offset-2"
+            >
+              Follow the builds →
+            </a>
+          </p>
+        </footer>
+      </body>
     </html>
   );
 }

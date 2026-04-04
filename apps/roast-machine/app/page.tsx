@@ -353,14 +353,14 @@ export default function Home() {
 
   if (result) {
     return (
-      <main className="flex min-h-screen flex-col items-center bg-slate-950">
+      <main className="flex min-h-screen flex-col items-center bg-transparent">
         <RoastResults result={result} url={submittedUrl} onReset={handleReset} />
       </main>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-transparent px-4">
       <div className="w-full max-w-lg text-center">
         <div className="text-5xl mb-4">🔥</div>
         <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight mb-4 leading-none">
