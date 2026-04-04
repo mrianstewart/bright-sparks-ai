@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SubscribeFooterLink } from "./SubscribeModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,14 +61,7 @@ export default function RootLayout({
               Bright Sparks AI
             </a>
             {' '}— I build a new AI tool every week.{' '}
-            <a
-              href="https://bright-sparks-ai.kit.com/f7a89bc8ec"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-300 hover:text-white transition-colors underline underline-offset-2"
-            >
-              Follow the builds →
-            </a>
+            <SubscribeFooterLink />
           </p>
         </footer>
       </body>
