@@ -102,6 +102,55 @@ function useRotatingMessage(active: boolean, intervalMs = 2750) {
   return { message: LOADING_MESSAGES[index], visible };
 }
 
+const SUBSTACK_URL = 'https://brightsparksai.substack.com';
+
+function EmailCapture() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    window.open(`${SUBSTACK_URL}?email=${encodeURIComponent(email.trim())}`, '_blank', 'noopener,noreferrer');
+    setSubmitted(true);
+  }
+
+  return (
+    <div className="animate-fade-in-up mb-8 rounded-2xl border border-slate-700/60 bg-slate-800/40 p-6 md:p-8 text-center" style={{ animationDelay: '1200ms' }}>
+      {submitted ? (
+        <div>
+          <div className="text-2xl mb-2">📬</div>
+          <p className="text-slate-300 font-semibold">Check the new tab to confirm your subscription.</p>
+          <p className="text-slate-500 text-sm mt-1">See you in the next build.</p>
+        </div>
+      ) : (
+        <>
+          <h3 className="text-lg font-bold text-white mb-1">Want to see what I build next?</h3>
+          <p className="text-sm text-slate-400 mb-5 leading-relaxed">
+            I ship a new AI tool every week and write about how I built it. Free, no spam, unsubscribe anytime.
+          </p>
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+              className="flex-1 rounded-xl border border-slate-600 bg-slate-700/60 px-4 py-3 text-white placeholder-slate-500 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20 text-sm transition-all"
+            />
+            <button
+              type="submit"
+              className="rounded-xl bg-slate-600 hover:bg-slate-500 px-5 py-3 font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 shrink-0"
+            >
+              Subscribe →
+            </button>
+          </form>
+        </>
+      )}
+    </div>
+  );
+}
+
 function buildShareText(result: RoastResult, url: string) {
   const [valentina, marcus, sage] = result.judges;
   return `🔥 The Roast Machine just reviewed ${url} — ${valentina.name} gave it ${valentina.score}/10 for design, ${marcus.name} gave it ${marcus.score}/10 for growth, and ${sage.name} gave it ${sage.score}/10 for vibes. Get your site roasted → brightsparks.ai/roast-machine`;
@@ -146,7 +195,7 @@ function ShareAndReset({
   }, [shareText]);
 
   return (
-    <div className="animate-fade-in-up space-y-3" style={{ animationDelay: '1200ms' }}>
+    <div className="animate-fade-in-up space-y-3" style={{ animationDelay: '1400ms' }}>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <button
           onClick={handleCopy}
@@ -194,7 +243,7 @@ function RoastResults({
   onReset: () => void;
 }) {
   return (
-    <div className="w-full max-w-5xl px-4 py-12 md:py-16">
+    <div className="w-full max-w-5xl px-4 py-0">
       {/* Site header */}
       <div className="mb-10 text-center">
         <p className="text-xs text-slate-500 mb-1 truncate">{url}</p>
@@ -283,6 +332,9 @@ function RoastResults({
         </ol>
       </div>
 
+      {/* Email capture */}
+      <EmailCapture />
+
       {/* Share + Roast another */}
       <ShareAndReset result={result} url={url} onReset={onReset} />
     </div>
@@ -360,14 +412,22 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-transparent px-4">
+    <main className="flex flex-col items-center pt-20 pb-4 bg-transparent px-4">
       <div className="w-full max-w-lg text-center">
         <div className="text-5xl mb-4">🔥</div>
         <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight mb-4 leading-none">
           The Roast Machine
         </h1>
-        <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+        <p className="text-lg text-slate-400 mb-3 leading-relaxed">
           Paste any website URL. Three AI judges will tear it apart.
+        </p>
+        <p className="text-sm text-slate-600 mb-10">
+          Part of{' '}
+          <a href="https://brightsparks.ai" className="text-slate-500 hover:text-slate-400 transition-colors">Bright Sparks AI</a>
+          {' '}— new tools every week.{' '}
+          <a href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-400 transition-colors underline underline-offset-2">
+            Subscribe →
+          </a>
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
