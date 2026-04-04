@@ -254,7 +254,7 @@ export default function Home() {
     e.preventDefault();
     const trimmed = url.trim();
     if (!trimmed) {
-      setError('Drop a URL in there and we'll get the judges warmed up.');
+      setError("Drop a URL in there and we'll get the judges warmed up.");
       return;
     }
     const normalised = trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
