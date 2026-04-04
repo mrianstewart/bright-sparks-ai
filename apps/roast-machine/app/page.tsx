@@ -103,16 +103,29 @@ function useRotatingMessage(active: boolean, intervalMs = 2750) {
 }
 
 const SUBSTACK_URL = 'https://brightsparksai.substack.com';
+const KIT_FORM_URL = 'https://app.kit.com/forms/9288290/subscriptions';
 
 function EmailCapture() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
-  function handleSubscribe(e: React.FormEvent) {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    window.open(`${SUBSTACK_URL}?email=${encodeURIComponent(email.trim())}`, '_blank', 'noopener,noreferrer');
-    setSubmitted(true);
+    setError('');
+
+    try {
+      await fetch(KIT_FORM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email_address: email.trim(), fields: '' }).toString(),
+        mode: 'no-cors',
+      });
+      setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Try again.');
+    }
   }
 
   return (
@@ -120,8 +133,8 @@ function EmailCapture() {
       {submitted ? (
         <div>
           <div className="text-2xl mb-2">📬</div>
-          <p className="text-slate-300 font-semibold">Check the new tab to confirm your subscription.</p>
-          <p className="text-slate-500 text-sm mt-1">See you in the next build.</p>
+          <p className="text-slate-300 font-semibold">You're in. See you in the next build.</p>
+          <p className="text-slate-500 text-sm mt-1">Check your inbox to confirm.</p>
         </div>
       ) : (
         <>
@@ -145,6 +158,7 @@ function EmailCapture() {
               Subscribe →
             </button>
           </form>
+          {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
         </>
       )}
     </div>
@@ -425,7 +439,7 @@ export default function Home() {
           Part of{' '}
           <a href="https://brightsparks.ai" className="text-slate-500 hover:text-slate-400 transition-colors">Bright Sparks AI</a>
           {' '}— new tools every week.{' '}
-          <a href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-400 transition-colors underline underline-offset-2">
+          <a href="https://brightsparks.ai/#subscribe" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-400 transition-colors underline underline-offset-2">
             Subscribe →
           </a>
         </p>
