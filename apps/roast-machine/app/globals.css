@@ -18,3 +18,10 @@ body {
 .animate-fade-in-up {
   animation: fadeInUp 0.45s ease-out both;
 }
+
+@keyframes progress-fill {
+  from { background-size: 0% 100%; }
+  to   { background-size: 100% 100%; }
+}
+
+
