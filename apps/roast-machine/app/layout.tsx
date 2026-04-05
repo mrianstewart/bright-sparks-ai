@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { SubscribeFooterLink } from "./SubscribeModal";
 
@@ -51,6 +52,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-slate-950">
+        <Script src="https://plausible.io/js/pa-_JPNEz7wg6TFSYCVA2cxu.js" strategy="afterInteractive" />
+        <Script id="plausible-init" strategy="afterInteractive">{`
+          window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+          plausible.init()
+        `}</Script>
         <header className="w-full px-6 pt-3 pb-0 flex items-center">
           <a
             href="https://brightsparks.ai"

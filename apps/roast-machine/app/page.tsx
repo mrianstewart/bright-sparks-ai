@@ -2,6 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: Record<string, unknown>) => void;
+  }
+}
+
 interface Judge {
   name: string;
   emoji: string;
@@ -123,6 +129,7 @@ function EmailCapture() {
         mode: 'no-cors',
       });
       setSubmitted(true);
+      window.plausible?.('Subscribe Clicked');
     } catch {
       setError('Something went wrong. Try again.');
     }
@@ -187,6 +194,7 @@ function ShareAndReset({
     try {
       await navigator.clipboard.writeText(shareText);
       setCopied(true);
+      window.plausible?.('Share Copied');
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // fallback for older browsers
@@ -409,6 +417,7 @@ export default function Home() {
       } else {
         setSubmittedUrl(normalised);
         setResult(data as RoastResult);
+        window.plausible?.('Roast Submitted');
       }
     } catch {
       setError("Something's gone sideways on our end. Give it another go.");
