@@ -214,6 +214,7 @@ function ShareAndReset({
   const handleTweet = useCallback(() => {
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+    window.plausible?.('Share on X');
   }, [shareText]);
 
   return (

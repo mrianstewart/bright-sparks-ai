@@ -121,6 +121,7 @@
 
         if (res.ok || res.status === 200 || res.status === 201) {
           showSuccess(formEl, successEl);
+          window.plausible?.('Subscribe Clicked', { props: { source: formEl.id || 'website-form' } });
         } else {
           throw new Error(`Status ${res.status}`);
         }

@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: Record<string, unknown>) => void;
+  }
+}
+
 const KIT_FORM_URL = 'https://app.kit.com/forms/9288290/subscriptions';
 
 export function SubscribeFooterLink() {
@@ -50,6 +56,7 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
         mode: 'no-cors',
       });
       setSubmitted(true);
+      window.plausible?.('Subscribe Clicked', { props: { source: 'footer-modal' } });
     } catch {
       setError('Something went wrong. Try again.');
     }
