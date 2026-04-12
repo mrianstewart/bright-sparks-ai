@@ -8,6 +8,10 @@ out/
 # Build outputs
 dist/
 
+# Sitemap (generated at build time)
+site/public/sitemap*.xml
+site/public/robots.txt
+
 # Environment variables
 .env
 .env.local

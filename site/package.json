@@ -5,11 +5,13 @@
   "scripts": {
     "dev": "rm -rf .next && next dev --port 3000",
     "build": "next build",
+    "postbuild": "next-sitemap",
     "start": "next start --port 3000"
   },
   "dependencies": {
     "@bsai/ui": "*",
     "next": "16.2.2",
+    "next-sitemap": "^4.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
