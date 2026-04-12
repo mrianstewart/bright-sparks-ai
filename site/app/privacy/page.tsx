@@ -47,7 +47,6 @@ export default function PrivacyPage() {
             margin-top: 1.5em;
             margin-bottom: 0.5em;
           }
-        :root { --bg: #ffffff; --text: #1a1a1a; --text-muted: #555; }
         `}</style>
         <div dangerouslySetInnerHTML={{ __html: policyHtml }} />
       </div>

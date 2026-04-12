@@ -116,14 +116,13 @@ export default function TermsPage() {
   return (
     <>
       <style>{`
-        :root { --bg: #ffffff; --text: #1a1a1a; }
         [data-custom-class='body'], [data-custom-class='body'] * { background: transparent !important; }
-        [data-custom-class='title'], [data-custom-class='title'] * { font-family: var(--font-sora) !important; color: #1a1a1a !important; }
-        [data-custom-class='subtitle'], [data-custom-class='subtitle'] * { font-family: var(--font-dm-sans) !important; color: #555 !important; }
-        [data-custom-class='heading_1'], [data-custom-class='heading_1'] * { font-family: var(--font-sora) !important; color: #1a1a1a !important; }
-        [data-custom-class='heading_2'], [data-custom-class='heading_2'] * { font-family: var(--font-sora) !important; color: #1a1a1a !important; }
-        [data-custom-class='body_text'], [data-custom-class='body_text'] * { font-family: var(--font-dm-sans) !important; color: #333 !important; }
-        [data-custom-class='link'], [data-custom-class='link'] * { color: #f5a623 !important; }
+        [data-custom-class='title'], [data-custom-class='title'] * { font-family: var(--font-sora) !important; color: var(--text) !important; }
+        [data-custom-class='subtitle'], [data-custom-class='subtitle'] * { font-family: var(--font-dm-sans) !important; color: var(--text-muted) !important; }
+        [data-custom-class='heading_1'], [data-custom-class='heading_1'] * { font-family: var(--font-sora) !important; color: var(--text) !important; }
+        [data-custom-class='heading_2'], [data-custom-class='heading_2'] * { font-family: var(--font-sora) !important; color: var(--text) !important; }
+        [data-custom-class='body_text'], [data-custom-class='body_text'] * { font-family: var(--font-dm-sans) !important; color: var(--text) !important; }
+        [data-custom-class='link'], [data-custom-class='link'] * { color: var(--gold) !important; }
       `}</style>
       <main style={{ maxWidth: '860px', margin: '0 auto', padding: '3rem 1.5rem 5rem' }}>
         <div dangerouslySetInnerHTML={{ __html: termsHtml }} />
