@@ -54,6 +54,10 @@ export default function RoastMachineLayout({ children }: { children: React.React
             <a href="https://brightsparks.ai/privacy" className="text-slate-400 hover:text-white transition-colors">
               Privacy
             </a>
+            {' · '}
+            <a href="https://brightsparks.ai/terms" className="text-slate-400 hover:text-white transition-colors">
+              Terms
+            </a>
           </p>
         </footer>
       </body>
