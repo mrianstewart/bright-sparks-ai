@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import Link from "next/link";
 import "./globals.css";
-import { SubscribeFooterLink } from "./SubscribeModal";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "The Roast Machine — Get your website brutally critiqued by AI judges",
@@ -24,47 +17,29 @@ export const metadata: Metadata = {
     url: "https://brightsparks.ai/roast-machine",
     siteName: "Bright Sparks AI",
     type: "website",
-    images: [
-      {
-        url: "https://brightsparks.ai/roast-machine/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "The Roast Machine — Get your website brutally critiqued by AI judges",
-      },
-    ],
+    images: [{ url: "https://brightsparks.ai/roast-machine/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Roast Machine — Get your website brutally critiqued by AI judges",
-    description: "Paste any website URL. Three AI judges will tear it apart — design, copy, and conversion. Free, instant, and merciless.",
     images: ["https://brightsparks.ai/roast-machine/og-image.png"],
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RoastMachineLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-slate-950">
         <Script src="https://plausible.io/js/pa-_JPNEz7wg6TFSYCVA2cxu.js" strategy="afterInteractive" />
         <Script id="plausible-init" strategy="afterInteractive">{`
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
           plausible.init()
         `}</Script>
+
         <header className="w-full px-6 pt-3 pb-0 flex items-center">
-          <a
-            href="https://brightsparks.ai"
-            className="flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity"
-          >
+          <Link href="https://brightsparks.ai" className="flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity">
             <img src="/roast-machine/logo.svg" alt="Bright Sparks AI" width={14} height={22} />
             <span className="text-sm font-semibold text-slate-300 tracking-tight">Bright Sparks AI</span>
-          </a>
+          </Link>
         </header>
 
         <div className="flex-1">{children}</div>
@@ -76,7 +51,9 @@ export default function RootLayout({
               Bright Sparks AI
             </a>
             {' '}— I build a new AI tool every week.{' '}
-            <SubscribeFooterLink />
+            <a href="https://brightsparks.ai/privacy" className="text-slate-400 hover:text-white transition-colors">
+              Privacy
+            </a>
           </p>
         </footer>
       </body>

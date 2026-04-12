@@ -1,0 +1,73 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'Terms of service for Bright Sparks AI products and this website.',
+};
+
+export default function TermsPage() {
+  return (
+    <main className="legal-page">
+      <div className="container">
+        <h1>Terms of Service</h1>
+        <p className="meta">Last updated: 1 April 2026 &nbsp;·&nbsp; Bright Sparks AI &nbsp;·&nbsp; <a href="mailto:hello@brightsparks.ai">hello@brightsparks.ai</a></p>
+
+        <div className="notice">
+          <strong>Note to Ian:</strong> This is a working draft. Before selling any paid products, run this through{' '}
+          <a href="https://termly.io" target="_blank" rel="noopener">Termly</a> or{' '}
+          <a href="https://docular.net" target="_blank" rel="noopener">Docular</a>{' '}
+          to get a properly reviewed legal template.
+        </div>
+
+        <p>These terms govern your use of the Bright Sparks AI website at <strong>brightsparks.ai</strong> and any products or digital downloads purchased from it. By using this site or purchasing a product, you agree to these terms.</p>
+        <p>Bright Sparks AI is operated by Ian Stewart, South Devon, United Kingdom.</p>
+
+        <h2>1. Digital products — licence</h2>
+        <p>When you purchase a digital product from Bright Sparks AI, you receive a <strong>personal, non-exclusive licence</strong> to use it for your own purposes. Unless the product listing explicitly states otherwise:</p>
+        <ul>
+          <li>The licence is for personal or internal business use only</li>
+          <li>You may not resell, redistribute, or sublicence the product</li>
+          <li>You may not present the product as your own creation for commercial purposes</li>
+          <li>You may not upload the product to template marketplaces or similar platforms</li>
+        </ul>
+        <p>Free tools are provided under the same licence unless a specific open-source licence is attached to that product.</p>
+
+        <h2>2. AI disclaimer</h2>
+        <p>Products sold through Bright Sparks AI may include AI-generated content, code, or outputs. You acknowledge that:</p>
+        <ul>
+          <li>AI outputs may contain errors, inaccuracies, or hallucinations</li>
+          <li>Nothing produced by or included with these products constitutes professional advice (legal, financial, medical, or otherwise)</li>
+          <li>You should review AI-generated content before relying on it in any important context</li>
+          <li>I accept no liability for decisions made on the basis of AI-generated outputs from these products</li>
+        </ul>
+
+        <h2>3. Refunds and cooling-off period</h2>
+        <p>Under the <strong>Consumer Contracts Regulations 2013</strong>, you have a 14-day right to cancel digital product purchases, provided you have not yet downloaded or accessed the product.</p>
+        <p>Once a digital product has been downloaded or accessed, the right to cancel is waived — consistent with Regulation 37(1)(b). You will be asked to acknowledge this at the point of purchase.</p>
+        <p>If a product is materially different from its description, or is demonstrably faulty, you are entitled to a remedy under the <strong>Consumer Rights Act 2015</strong>. In such cases, contact me at <a href="mailto:hello@brightsparks.ai">hello@brightsparks.ai</a> and I will make it right.</p>
+
+        <div className="statutory-rights">
+          <p>These terms do not affect your statutory rights under UK consumer law.</p>
+        </div>
+
+        <h2>4. Limitation of liability</h2>
+        <p>To the fullest extent permitted by law, Bright Sparks AI shall not be liable for any indirect, incidental, special, or consequential loss arising from your use of this site or any product purchased from it.</p>
+        <p>My total liability to you for any claim shall not exceed the price you paid for the relevant product.</p>
+        <p>Nothing in these terms limits liability for death or personal injury caused by negligence, fraud, or any other matter that cannot be excluded by law.</p>
+
+        <h2>5. Availability and changes</h2>
+        <p>I reserve the right to modify, withdraw, or update products and their pricing at any time. Purchased products will continue to be available as described at the time of purchase.</p>
+        <p>This website is provided &quot;as is&quot; and I do not guarantee uninterrupted availability.</p>
+
+        <h2>6. Governing law</h2>
+        <p>These terms are governed by the law of <strong>England and Wales</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+        <h2>7. Changes to these terms</h2>
+        <p>I may update these terms from time to time. The updated date at the top of this page will reflect any changes. Continued use of the site after changes constitutes acceptance of the revised terms.</p>
+
+        <h2>8. Contact</h2>
+        <p>Questions about these terms? Email me at <a href="mailto:hello@brightsparks.ai">hello@brightsparks.ai</a>.</p>
+      </div>
+    </main>
+  );
+}

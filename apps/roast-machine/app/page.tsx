@@ -405,7 +405,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch('/roast-machine/api/roast', {
+      const res = await fetch('/roast-machine/api/roast-machine', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: normalised }),

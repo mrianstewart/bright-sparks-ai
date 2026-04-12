@@ -1,0 +1,12 @@
+{
+  "name": "bright-sparks-ai",
+  "private": true,
+  "workspaces": [
+    "site",
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.9.6"
+  }
+}

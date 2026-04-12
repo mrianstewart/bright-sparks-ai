@@ -3,5 +3,9 @@
         {
             "path": "."
         }
-    ]
+    ],
+    "settings": {
+        "claudeCode.useTerminal": true,
+        "claudeCode.preferredLocation": "terminal"
+    }
 }
