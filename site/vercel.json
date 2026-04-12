@@ -1,6 +1,7 @@
 {
   "buildCommand": "npm install --prefix=.. && next build",
   "installCommand": "npm install --prefix=..",
+  "outputDirectory": ".next",
   "rewrites": [
     {
       "source": "/roast-machine",
