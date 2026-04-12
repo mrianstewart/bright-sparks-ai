@@ -116,6 +116,7 @@ export default function TermsPage() {
   return (
     <>
       <style>{`
+        :root { --bg: #ffffff; --text: #1a1a1a; }
         [data-custom-class='body'], [data-custom-class='body'] * { background: transparent !important; }
         [data-custom-class='title'], [data-custom-class='title'] * { font-family: var(--font-sora) !important; color: #1a1a1a !important; }
         [data-custom-class='subtitle'], [data-custom-class='subtitle'] * { font-family: var(--font-dm-sans) !important; color: #555 !important; }
