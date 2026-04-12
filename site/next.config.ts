@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@bsai/ui'],
+  experimental: {
+    turbopack: {
+      root: '..',
+    },
+  },
   async redirects() {
     return [
       { source: '/privacy.html', destination: '/privacy', permanent: true },
