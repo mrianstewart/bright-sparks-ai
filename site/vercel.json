@@ -1,7 +1,7 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm install --prefix=.. && next build",
-  "installCommand": "npm install --prefix=..",
+  "installCommand": "cd .. && npm install",
+  "buildCommand": "next build",
   "rewrites": [
     {
       "source": "/roast-machine",
