@@ -55,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="container footer__inner">
             <span className="footer__copy">&copy; {new Date().getFullYear()} Bright Sparks AI</span>
             <nav className="footer__links" aria-label="Footer links">
-              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/privacy">Privacy</Link>
               <span>&middot;</span>
               <Link href="/terms">Terms</Link>
               <span>&middot;</span>
