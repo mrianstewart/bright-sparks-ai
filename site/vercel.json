@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd .. && npx turbo run build --filter=@bsai/site",
+  "buildCommand": "next build",
   "rewrites": [
     {
       "source": "/roast-machine",
