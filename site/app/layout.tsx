@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
+import { Nav } from "@bsai/ui";
 import "./globals.css";
 
 const sora = Sora({
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           plausible.init()
         `}</Script>
 
+        <Nav />
         {children}
 
         <footer className="footer">

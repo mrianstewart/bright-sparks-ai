@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Nav, EmailForm, RevealObserver } from '@bsai/ui';
+import { EmailForm, RevealObserver } from '@bsai/ui';
 
 export const metadata: Metadata = {
   title: 'Bright Sparks AI — AI tools, apps and automations built weekly',
@@ -19,7 +19,6 @@ export default function HomePage() {
   return (
     <>
       <RevealObserver />
-      <Nav />
       <main>
 
         {/* HERO */}
