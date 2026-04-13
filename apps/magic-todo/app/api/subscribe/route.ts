@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 const KIT_FORM_ID = '16d1f4fac6';
 
 export async function POST(req: NextRequest) {
+  const apiKey = process.env.KIT_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: 'not_configured' }, { status: 503 });
+  }
+
   let body: { email?: string };
   try {
     body = await req.json();
@@ -17,15 +22,20 @@ export async function POST(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `https://app.kit.com/forms/${KIT_FORM_ID}/subscriptions`,
+      `https://api.kit.com/v4/forms/${KIT_FORM_ID}/subscribers`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ email_address: email }).toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ email_address: email }),
       }
     );
 
     if (!res.ok) {
+      const text = await res.text();
+      console.error('Kit API error:', res.status, text);
       return NextResponse.json({ error: 'subscription_failed' }, { status: 502 });
     }
 
