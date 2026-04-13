@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { EmailCapture } from './email-capture';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,23 +33,170 @@ const LOADING_MESSAGES = [
 
 const MINUTE_PRESETS = [10, 20, 30, 60];
 
+// ─── Analytics helper ─────────────────────────────────────────────────────────
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const track = (event: string, props?: Record<string, string | boolean | number>) =>
+  typeof window !== 'undefined' && (window as any).plausible?.(event, { props });
+
+// ─── Share card (Canvas) ──────────────────────────────────────────────────────
+
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number
+): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let current = '';
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const test = current ? `${current} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && current) {
+      lines.push(current);
+      if (lines.length >= maxLines) return lines;
+      current = word;
+    } else {
+      current = test;
+    }
+  }
+
+  if (current && lines.length < maxLines) {
+    if (ctx.measureText(current).width > maxWidth) {
+      while (current.length > 3 && ctx.measureText(current + '…').width > maxWidth) {
+        current = current.slice(0, -1);
+      }
+      current += '…';
+    }
+    lines.push(current);
+  }
+
+  return lines;
+}
+
+function drawRoundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number, y: number, w: number, h: number, r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+async function generateShareCard(
+  task: string,
+  stepCount: number,
+  totalMinutes: number
+): Promise<Blob> {
+  await document.fonts.ready;
+
+  const W = 1200, H = 630, PAD = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d')!;
+
+  // Background
+  ctx.fillStyle = '#0F1B2D';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle gradient
+  const grad = ctx.createLinearGradient(0, 0, W * 0.6, H);
+  grad.addColorStop(0, 'rgba(245, 166, 35, 0.06)');
+  grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Border
+  ctx.strokeStyle = 'rgba(245, 166, 35, 0.22)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(28, 28, W - 56, H - 56);
+
+  // Bolt watermark (top-right, very faint)
+  ctx.save();
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = '#F5A623';
+  ctx.translate(W - 210, 20);
+  ctx.scale(0.85, 0.85);
+  const bolt = new Path2D('M125 0L10 185H95L70 320L190 135H105L125 0Z');
+  ctx.fill(bolt);
+  ctx.restore();
+
+  // App tag pill
+  const TAG_X = PAD, TAG_Y = 76;
+  drawRoundRect(ctx, TAG_X, TAG_Y - 20, 160, 32, 6);
+  ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+  ctx.fill();
+  ctx.fillStyle = '#60A5FA';
+  ctx.font = '600 13px ui-monospace, "Cascadia Code", monospace';
+  ctx.fillText('MAGIC TODO', TAG_X + 16, TAG_Y + 2);
+
+  // "I broke this down:" label
+  ctx.fillStyle = 'rgba(156, 163, 175, 0.6)';
+  ctx.font = '400 20px "DM Sans", system-ui, -apple-system, sans-serif';
+  ctx.fillText('I just broke this down:', PAD, 158);
+
+  // Task title
+  ctx.fillStyle = '#E8E0D4';
+  ctx.font = '700 52px "Sora", "Helvetica Neue", Arial, sans-serif';
+  const titleLines = wrapText(ctx, `"${task}"`, W - PAD * 2, 2);
+  titleLines.forEach((line, i) => ctx.fillText(line, PAD, 228 + i * 68));
+
+  // Stats bar
+  const statsY = 228 + titleLines.length * 68 + 56;
+  ctx.fillStyle = '#F5A623';
+  ctx.font = '600 26px "DM Sans", system-ui, -apple-system, sans-serif';
+  ctx.fillText(`${stepCount} steps`, PAD, statsY);
+
+  if (totalMinutes > 0) {
+    const dot = { x: PAD + ctx.measureText(`${stepCount} steps`).width + 20, y: statsY };
+    ctx.fillStyle = 'rgba(156, 163, 175, 0.5)';
+    ctx.beginPath();
+    ctx.arc(dot.x, dot.y - 8, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#F5A623';
+    ctx.fillText(`~${totalMinutes} min`, dot.x + 18, statsY);
+  }
+
+  // Watermark
+  ctx.fillStyle = 'rgba(156, 163, 175, 0.38)';
+  ctx.font = '400 17px "DM Sans", system-ui, -apple-system, sans-serif';
+  ctx.fillText('Made with MagicTodo — brightsparks.ai/magic-todo', PAD, H - 52);
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => (blob ? resolve(blob) : reject(new Error('toBlob failed'))), 'image/png');
+  });
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
-type Phase2 = 'idle' | 'loading' | 'results' | 'error' | 'rate_limited';
+type AppPhase = 'idle' | 'loading' | 'results' | 'error' | 'rate_limited';
 
 export default function MagicTodoPage() {
-  const [task,        setTask]        = useState('');
-  const [minutes,     setMinutes]     = useState<number | null>(null);
-  const [phase,       setPhase]       = useState<Phase2>('idle');
-  const [loadingIdx,  setLoadingIdx]  = useState(0);
-  const [result,      setResult]      = useState<ApiResponse | null>(null);
-  const [taskLabel,   setTaskLabel]   = useState('');
-  const [checked,     setChecked]     = useState<Set<string>>(new Set());
-  const [errorMsg,    setErrorMsg]    = useState('');
-  const [copyLabel,   setCopyLabel]   = useState('Copy to clipboard');
+  const [task,       setTask]       = useState('');
+  const [minutes,    setMinutes]    = useState<number | null>(null);
+  const [phase,      setPhase]      = useState<AppPhase>('idle');
+  const [loadingIdx, setLoadingIdx] = useState(0);
+  const [result,     setResult]     = useState<ApiResponse | null>(null);
+  const [taskLabel,  setTaskLabel]  = useState('');
+  const [checked,    setChecked]    = useState<Set<string>>(new Set());
+  const [errorMsg,   setErrorMsg]   = useState('');
+  const [copyLabel,  setCopyLabel]  = useState('Copy to clipboard');
+  const [shareLabel, setShareLabel] = useState('Share my breakdown');
+  const [isSharing,  setIsSharing]  = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Restore checkboxes from localStorage when result loads
+  // Restore checkboxes from localStorage
   useEffect(() => {
     if (phase === 'results' && taskLabel && result) {
       try {
@@ -58,7 +206,7 @@ export default function MagicTodoPage() {
     }
   }, [phase, taskLabel, result]);
 
-  // Persist checkboxes to localStorage
+  // Persist checkboxes
   useEffect(() => {
     if (!taskLabel || phase !== 'results') return;
     try {
@@ -75,6 +223,17 @@ export default function MagicTodoPage() {
     }, 1800);
     return () => clearInterval(intervalRef.current!);
   }, [phase]);
+
+  // Fire Plausible event when breakdown results appear
+  useEffect(() => {
+    if (phase === 'results' && result) {
+      track('MagicTodo Breakdown', {
+        taskLength: taskLabel.length,
+        hasTimeLimit: minutes !== null,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, result]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -108,15 +267,11 @@ export default function MagicTodoPage() {
         return;
       }
 
-      // Attach stable IDs to steps
       const withIds: ApiResponse = {
         ...data,
-        phases: data.phases.map((p: Omit<Phase, never>, pi: number) => ({
+        phases: (data.phases as Phase[]).map((p, pi) => ({
           ...p,
-          steps: p.steps.map((s: Omit<Step, 'id'>, si: number) => ({
-            ...s,
-            id: `p${pi}s${si}`,
-          })),
+          steps: p.steps.map((s, si) => ({ ...s, id: `p${pi}s${si}` })),
         })),
       };
 
@@ -135,6 +290,7 @@ export default function MagicTodoPage() {
     setChecked(new Set());
     setResult(null);
     setErrorMsg('');
+    setShareLabel('Share my breakdown');
     setPhase('idle');
   }
 
@@ -167,8 +323,43 @@ export default function MagicTodoPage() {
     });
   }
 
+  async function handleShare() {
+    if (!result || isSharing) return;
+    setIsSharing(true);
+
+    try {
+      const blob = await generateShareCard(taskLabel, allSteps.length, result.totalMinutes);
+      const file = new File([blob], 'magic-todo.png', { type: 'image/png' });
+
+      if (typeof navigator.share === 'function' && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `${taskLabel} — ${allSteps.length} steps`,
+          text: `I just broke down "${taskLabel}" into ${allSteps.length} tiny steps with MagicTodo!`,
+        });
+      } else {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        setShareLabel('Image copied!');
+        setTimeout(() => setShareLabel('Share my breakdown'), 3000);
+      }
+    } catch (err) {
+      if (err instanceof Error && err.name !== 'AbortError') {
+        // Share cancelled or clipboard failed — silently ignore
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  }
+
   const allSteps = result?.phases.flatMap(p => p.steps) ?? [];
-  const allDone = allSteps.length > 0 && checked.size === allSteps.length;
+  const allDone  = allSteps.length > 0 && checked.size === allSteps.length;
+
+  // Build X/Twitter share URL
+  const tweetTask = taskLabel.length > 100 ? taskLabel.slice(0, 97) + '…' : taskLabel;
+  const tweetText = encodeURIComponent(
+    `I just broke down "${tweetTask}" into ${allSteps.length} tiny steps with @BrightSparksAI's MagicTodo 🧠✨ brightsparks.ai/magic-todo`
+  );
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
 
   return (
     <>
@@ -198,48 +389,51 @@ export default function MagicTodoPage() {
                 className="mt-form__textarea"
                 rows={3}
                 required
+                autoFocus
                 aria-label="What's overwhelming you?"
               />
 
               <div className="mt-form__time-block">
                 <span className="mt-form__optional">Optional</span>
-              <div className="mt-form__time-row">
-                <label className="mt-form__time-label" htmlFor="mt-minutes">
-                  I have
-                  <input
-                    id="mt-minutes"
-                    type="number"
-                    value={minutes ?? ''}
-                    onChange={e => setMinutes(e.target.value ? Number(e.target.value) : null)}
-                    placeholder="—"
-                    min={1}
-                    max={480}
-                    className="mt-form__time-input"
-                    aria-label="Available minutes"
-                  />
-                  minutes
-                </label>
+                <div className="mt-form__time-row">
+                  <label className="mt-form__time-label" htmlFor="mt-minutes">
+                    I have
+                    <input
+                      id="mt-minutes"
+                      type="number"
+                      value={minutes ?? ''}
+                      onChange={e => setMinutes(e.target.value ? Number(e.target.value) : null)}
+                      placeholder="—"
+                      min={1}
+                      max={480}
+                      className="mt-form__time-input"
+                      aria-label="Available minutes"
+                    />
+                    minutes
+                  </label>
 
-                <div className="mt-form__presets" role="group" aria-label="Quick time presets">
-                  {MINUTE_PRESETS.map(m => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setMinutes(prev => prev === m ? null : m)}
-                      className={`mt-preset${minutes === m ? ' mt-preset--active' : ''}`}
-                      aria-pressed={minutes === m}
-                    >
-                      {m}
-                    </button>
-                  ))}
+                  <div className="mt-form__presets" role="group" aria-label="Quick time presets">
+                    {MINUTE_PRESETS.map(m => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setMinutes(prev => prev === m ? null : m)}
+                        className={`mt-preset${minutes === m ? ' mt-preset--active' : ''}`}
+                        aria-pressed={minutes === m}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
               </div>
 
               <button type="submit" className="btn btn--primary mt-form__submit">
                 Break it down ✨
               </button>
             </form>
+
+            <EmailCapture variant="hero" />
           </div>
         </section>
       )}
@@ -285,7 +479,7 @@ export default function MagicTodoPage() {
             <p className="mt-results__subtitle">
               {minutes
                 ? `Here's how to make progress in ${minutes} minutes.`
-                : "Here\u2019s how to make it feel manageable."}
+                : 'Here\u2019s how to make it feel manageable.'}
               {result.totalMinutes > 0 && (
                 <span className="mt-results__total-time"> · ~{result.totalMinutes} min total</span>
               )}
@@ -333,7 +527,7 @@ export default function MagicTodoPage() {
           <footer className="mt-results__footer fade-in">
             {allDone ? (
               <p className="mt-results__done-msg">
-                {result.finalMessage || "You did it. Every single step. That\u2019s not nothing \u2014 that\u2019s everything. \uD83C\uDF89"}
+                {result.finalMessage || 'You did it. Every single step. That\u2019s not nothing \u2014 that\u2019s everything. \uD83C\uDF89'}
               </p>
             ) : (
               <>
@@ -347,6 +541,21 @@ export default function MagicTodoPage() {
             )}
 
             <div className="mt-results__actions">
+              <button
+                onClick={handleShare}
+                disabled={isSharing}
+                className="btn btn--ghost"
+              >
+                {isSharing ? 'Generating…' : shareLabel}
+              </button>
+              <a
+                href={twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--x"
+              >
+                Post on X
+              </a>
               <button onClick={handleCopy} className="btn btn--ghost">
                 {copyLabel}
               </button>
@@ -355,6 +564,8 @@ export default function MagicTodoPage() {
               </button>
             </div>
           </footer>
+
+          <EmailCapture variant="results" />
         </section>
       )}
     </>

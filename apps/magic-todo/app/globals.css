@@ -572,6 +572,85 @@ h1, h2, h3 {
   margin-top: 0.75rem;
 }
 
+/* ─── Email capture ──────────────────────────────────────── */
+.mt-email-capture--results {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.mt-email-capture--hero {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.mt-email-capture__headline {
+  font-family: var(--font-head);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.mt-email-capture__sub {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.mt-email-capture__hint {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.mt-email-capture__form {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+.mt-email-capture__input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.mt-email-capture__input:focus { border-color: rgba(245, 166, 35, 0.4); }
+.mt-email-capture__input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+.mt-email-capture__success {
+  color: var(--green);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.75rem 0;
+}
+
+/* ─── X / Twitter button ─────────────────────────────────── */
+.btn--x {
+  background: #000;
+  color: #fff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+.btn--x:hover {
+  background: #111;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 640px) {
   .mt-hero { padding: 48px 20px 64px; }
@@ -581,14 +660,35 @@ h1, h2, h3 {
     align-items: flex-start;
   }
 
-  .mt-step__label { gap: 0.625rem; padding: 0.875rem; }
-  .mt-step__time  { display: none; }
+  /* Larger tap targets on mobile */
+  .mt-step__label {
+    gap: 0.75rem;
+    padding: 0.875rem;
+    min-height: 44px;
+  }
+  .mt-step__checkbox {
+    width: 20px;
+    height: 20px;
+  }
+  .mt-step__time { display: none; }
 
   .mt-results__footer {
     flex-direction: column;
     align-items: stretch;
   }
-  .mt-results__footer .btn {
+  .mt-results__actions {
+    flex-direction: column;
+  }
+  .mt-results__actions .btn,
+  .mt-results__actions a.btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mt-email-capture__form {
+    flex-direction: column;
+  }
+  .mt-email-capture__btn {
     width: 100%;
     justify-content: center;
   }

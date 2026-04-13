@@ -17,15 +17,32 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MagicTodo — Break any overwhelming task into tiny steps",
-  description: "Type the thing you've been avoiding. MagicTodo breaks it into steps so small they feel almost easy.",
+  title: "MagicTodo — AI Task Breakdown for Overwhelmed Brains",
+  description:
+    "Type the thing you've been avoiding. MagicTodo uses AI to break overwhelming tasks into tiny, specific steps you can actually start. Free to use.",
   metadataBase: new URL("https://brightsparks.ai"),
   openGraph: {
-    title: "MagicTodo — Break any overwhelming task into tiny steps",
-    description: "Type the thing you've been avoiding. MagicTodo breaks it into steps so small they feel almost easy.",
+    title: "MagicTodo — AI Task Breakdown for Overwhelmed Brains",
+    description:
+      "Type the thing you've been avoiding. MagicTodo uses AI to break overwhelming tasks into tiny, specific steps you can actually start. Free to use.",
     url: "https://brightsparks.ai/magic-todo",
     siteName: "Bright Sparks AI",
     type: "website",
+    images: [
+      {
+        url: "/og/magic-todo.png",
+        width: 1200,
+        height: 630,
+        alt: "MagicTodo — AI Task Breakdown",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MagicTodo — AI Task Breakdown for Overwhelmed Brains",
+    description:
+      "Type the thing you've been avoiding. MagicTodo uses AI to break overwhelming tasks into tiny, specific steps you can actually start.",
+    images: ["/og/magic-todo.png"],
   },
 };
 
@@ -52,9 +69,11 @@ export default function MagicTodoLayout({ children }: { children: React.ReactNod
 
         <footer className="mt-footer">
           <p>
-            Made by{' '}
+            Built by{' '}
             <a href="https://brightsparks.ai">Bright Sparks AI</a>
-            {' — '}I build a new AI tool every week.{' '}
+            {' · '}
+            Powered by Claude
+            {' · '}
             <a href="https://brightsparks.ai/privacy">Privacy</a>
             {' · '}
             <a href="https://brightsparks.ai/terms">Terms</a>
