@@ -399,6 +399,8 @@ export default function Home() {
     // update the input to show the normalised version
     setUrl(normalised);
 
+    window.plausible?.('Roast Started');
+
     setError('');
     setResult(null);
     setLoadingKey(k => k + 1);

@@ -93,12 +93,14 @@ export default function HomePage() {
                 <Link href="/roast-machine" className="btn btn--ghost">Try it →</Link>
               </div>
 
-              <div className="build-card build-card--ghost reveal reveal--delay-1" aria-hidden="true">
+              <div className="build-card reveal reveal--delay-1">
                 <div className="build-card__header">
-                  <span className="tag tag--coming-soon">COMING SOON</span>
+                  <span className="tag tag--app">APP</span>
+                  <span className="tag tag--free">FREE</span>
                 </div>
-                <h3 className="build-card__title">Build #2</h3>
-                <p className="build-card__desc">Something&apos;s taking shape. Check back next week.</p>
+                <h3 className="build-card__title">MagicTodo</h3>
+                <p className="build-card__desc">Type the thing you&apos;ve been avoiding. AI breaks it into steps so small they feel almost easy. Free, instant, no login.</p>
+                <Link href="/magic-todo" className="btn btn--ghost">Try it →</Link>
               </div>
 
               <div className="build-card build-card--ghost reveal reveal--delay-2" aria-hidden="true">
