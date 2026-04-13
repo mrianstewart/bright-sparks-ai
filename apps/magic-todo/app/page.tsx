@@ -240,6 +240,8 @@ export default function MagicTodoPage() {
     const trimmed = task.trim();
     if (!trimmed) return;
 
+    track('Breakdown Started', { hasTimeLimit: minutes !== null });
+
     setTaskLabel(trimmed);
     setChecked(new Set());
     setResult(null);
