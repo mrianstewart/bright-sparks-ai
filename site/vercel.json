@@ -10,6 +10,14 @@
     {
       "source": "/roast-machine/(.*)",
       "destination": "https://roast-machine-mu.vercel.app/roast-machine/$1"
+    },
+    {
+      "source": "/magic-todo",
+      "destination": "https://magic-todo-two.vercel.app/magic-todo"
+    },
+    {
+      "source": "/magic-todo/(.*)",
+      "destination": "https://magic-todo-two.vercel.app/magic-todo/$1"
     }
   ]
 }
