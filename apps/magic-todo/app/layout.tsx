@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og/magic-todo.png",
+        url: "https://brightsparks.ai/magic-todo/og",
         width: 1200,
         height: 630,
         alt: "MagicTodo — AI Task Breakdown",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "MagicTodo — AI Task Breakdown for Overwhelmed Brains",
     description:
       "Type the thing you've been avoiding. MagicTodo uses AI to break overwhelming tasks into tiny, specific steps you can actually start.",
-    images: ["/og/magic-todo.png"],
+    images: ["https://brightsparks.ai/magic-todo/og"],
   },
 };
 

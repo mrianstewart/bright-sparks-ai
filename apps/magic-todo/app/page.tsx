@@ -220,7 +220,7 @@ export default function MagicTodoPage() {
     setLoadingIdx(0);
     intervalRef.current = setInterval(() => {
       setLoadingIdx(i => (i + 1) % LOADING_MESSAGES.length);
-    }, 1800);
+    }, 2800);
     return () => clearInterval(intervalRef.current!);
   }, [phase]);
 
