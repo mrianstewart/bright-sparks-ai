@@ -223,6 +223,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  console.log(JSON.stringify({ event: 'roast', url, ip }));
+
   try {
     const userMessage = [
       `Review this website. Here is the extracted content:`,

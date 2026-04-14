@@ -115,6 +115,8 @@ export async function POST(req: NextRequest) {
     ? `Task: ${task.trim()}\nAvailable time: ${timeMinutes} minutes`
     : `Task: ${task.trim()}`;
 
+  console.log(JSON.stringify({ event: 'breakdown', task: task.trim(), timeMinutes: timeMinutes ?? null, ip }));
+
   // Call Claude
   try {
     const stream = await anthropic.messages.stream({
