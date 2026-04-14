@@ -115,7 +115,17 @@ export async function POST(req: NextRequest) {
     ? `Task: ${task.trim()}\nAvailable time: ${timeMinutes} minutes`
     : `Task: ${task.trim()}`;
 
-  console.log(JSON.stringify({ event: 'breakdown', task: task.trim(), timeMinutes: timeMinutes ?? null, ip }));
+  // Log to Supabase (fire-and-forget)
+  fetch(`${process.env.SUPABASE_URL}/rest/v1/submissions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': process.env.SUPABASE_ANON_KEY!,
+      'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({ app: 'magic-todo', content: task.trim(), time_minutes: timeMinutes ?? null, ip }),
+  }).catch(() => {});
 
   // Call Claude
   try {

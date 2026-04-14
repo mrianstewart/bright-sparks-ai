@@ -223,7 +223,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  console.log(JSON.stringify({ event: 'roast', url, ip }));
+  // Log to Supabase (fire-and-forget)
+  fetch(`${process.env.SUPABASE_URL}/rest/v1/submissions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': process.env.SUPABASE_ANON_KEY!,
+      'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({ app: 'roast-machine', content: url, ip }),
+  }).catch(() => {});
 
   try {
     const userMessage = [
