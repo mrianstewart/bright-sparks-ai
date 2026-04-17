@@ -18,6 +18,14 @@
     {
       "source": "/magic-todo/(.*)",
       "destination": "https://magic-todo-two.vercel.app/magic-todo/$1"
+    },
+    {
+      "source": "/speech-writer",
+      "destination": "https://speech-writer-cyan.vercel.app/speech-writer"
+    },
+    {
+      "source": "/speech-writer/(.*)",
+      "destination": "https://speech-writer-cyan.vercel.app/speech-writer/$1"
     }
   ]
 }
