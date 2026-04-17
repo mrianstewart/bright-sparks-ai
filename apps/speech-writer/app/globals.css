@@ -60,7 +60,24 @@ h1, h2, h3, h4 {
 
 .container--narrow { max-width: 680px; }
 
-/* Prevent any child from blowing out the horizontal layout on mobile */
+/* Prevent horizontal overflow across the whole questionnaire */
+.sw-questionnaire { overflow-x: clip; }
+
+/* Every layer in the content stack must be explicitly full-width */
+.sw-q-content--forward,
+.sw-q-content--back,
+.sw-q-step,
+.sw-q-fields,
+.sw-q-field { width: 100%; }
+
+/* Inputs and textareas must never exceed their container */
+.sw-q-input,
+.sw-q-textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Prevent any flex/grid child from blowing out horizontal layout on mobile */
 .sw-questionnaire * { min-width: 0; }
 .text-center { text-align: center; }
 
