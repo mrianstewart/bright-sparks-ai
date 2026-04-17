@@ -527,6 +527,16 @@ h1, h2, h3, h4 {
   min-height: 100vh;
 }
 
+/* Top back nav — sits above progress bar, reserves space even when hidden */
+.sw-q-topnav {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  /* scroll-margin so scrollIntoView clears the fixed header */
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
 /* Progress bar */
 .sw-progress {
   margin-bottom: 2.5rem;

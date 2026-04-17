@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useState } from 'react';
+import { useReducer, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 // ── Constants ─────────────────────────────────────────────────
@@ -765,6 +765,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 // ── Main component ────────────────────────────────────────────
 export function SpeechQuestionnaire() {
   const router = useRouter();
+  const topRef = useRef<HTMLDivElement>(null);
   const [state, dispatch] = useReducer(reducer, initial);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [animKey, setAnimKey] = useState(0);
@@ -774,9 +775,14 @@ export function SpeechQuestionnaire() {
 
   const ok = canContinue(state);
 
+  const scrollToTop = () => {
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const navigate = (forward: boolean) => {
     setDirection(forward ? 'forward' : 'back');
     setAnimKey((k) => k + 1);
+    scrollToTop();
   };
 
   const handleNext = () => {
@@ -830,9 +836,22 @@ export function SpeechQuestionnaire() {
 
   const displayStep = Math.min(state.step, TOTAL_STEPS);
 
+  const showBack = state.step > 1 || reviewing;
+
   return (
     <div className="sw-questionnaire">
       <div className="container container--narrow">
+        <div ref={topRef} className="sw-q-topnav">
+          {showBack && (
+            <button
+              type="button"
+              className="sw-q-btn sw-q-btn--back"
+              onClick={handleBack}
+            >
+              ← Back
+            </button>
+          )}
+        </div>
         <ProgressBar step={displayStep} total={TOTAL_STEPS} />
 
         <div
