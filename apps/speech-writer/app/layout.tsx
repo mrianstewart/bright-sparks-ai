@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Sora, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
@@ -15,6 +15,11 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://brightsparks.ai"),
