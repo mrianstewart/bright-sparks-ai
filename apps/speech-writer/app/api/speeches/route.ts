@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
       ? (body.roleOther as string) || 'Other'
       : (body.role as string);
 
-  const { data: speech, error: insertError } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: speech, error: insertError } = await (supabase as any)
     .from('speeches')
     .insert({
       access_token,
@@ -71,7 +72,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { error: eventError } = await supabase.from('speech_events').insert({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: eventError } = await (supabase as any).from('speech_events').insert({
     speech_id: speech.id,
     event_type: 'created',
     metadata: { email, speaker_role: speakerRole },
