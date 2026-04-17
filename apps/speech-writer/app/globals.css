@@ -25,7 +25,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background-color: var(--bg);
@@ -581,18 +581,13 @@ h1, h2, h3, h4 {
 }
 
 /* Step transitions */
-@keyframes stepFromRight {
-  from { opacity: 0; transform: translateX(28px); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes stepEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes stepFromLeft {
-  from { opacity: 0; transform: translateX(-28px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.sw-q-content--forward { animation: stepFromRight 0.32s var(--ease-out) both; }
-.sw-q-content--back    { animation: stepFromLeft  0.32s var(--ease-out) both; }
+.sw-q-content--forward,
+.sw-q-content--back { animation: stepEnter 0.28s var(--ease-out) both; }
 
 /* Step layout */
 .sw-q-step {
