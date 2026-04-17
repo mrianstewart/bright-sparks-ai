@@ -59,6 +59,9 @@ h1, h2, h3, h4 {
 }
 
 .container--narrow { max-width: 680px; }
+
+/* Prevent any child from blowing out the horizontal layout on mobile */
+.sw-questionnaire * { min-width: 0; }
 .text-center { text-align: center; }
 
 /* ─── Animations ─────────────────────────────────────────── */
@@ -711,6 +714,8 @@ h1, h2, h3, h4 {
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text);
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .sw-q-helper {
@@ -722,6 +727,8 @@ h1, h2, h3, h4 {
 /* Date input — normalise the native picker appearance */
 .sw-q-input--date {
   color-scheme: light;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Optional label suffix */
