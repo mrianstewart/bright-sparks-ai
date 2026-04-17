@@ -57,12 +57,23 @@ const LENGTHS = [
   { value: '7', label: '7 minutes', words: '~900 words', note: 'For those who have a lot to say' },
 ];
 
+// ── Role groups ───────────────────────────────────────────────
+type RoleGroup = 'A' | 'B' | 'C' | 'D';
+
+function getRoleGroup(role: string): RoleGroup {
+  if (['Best Man', 'Maid of Honour', 'Close Friend', 'Sibling'].includes(role)) return 'A';
+  if (['Father of the Bride', 'Mother of the Bride', 'Father of the Groom', 'Mother of the Groom'].includes(role)) return 'B';
+  if (['Bride', 'Groom'].includes(role)) return 'C';
+  return 'D';
+}
+
 // ── State ─────────────────────────────────────────────────────
 type FormState = {
   step: number;
   // Step 1
   role: string;
   roleOther: string;
+  roleGroup: RoleGroup;
   // Step 2
   partner1Name: string;
   partner2Name: string;
@@ -100,6 +111,7 @@ const initial: FormState = {
   step: 1,
   role: '',
   roleOther: '',
+  roleGroup: 'D',
   partner1Name: '',
   partner2Name: '',
   togetherDuration: '',
@@ -127,6 +139,7 @@ function reducer(state: FormState, action: Action): FormState {
         ...state,
         role: action.value,
         roleOther: action.value !== 'Other' ? '' : state.roleOther,
+        roleGroup: getRoleGroup(action.value),
       };
     case 'SET':
       return { ...state, [action.field]: action.value };
@@ -157,7 +170,7 @@ function canContinue(state: FormState): boolean {
     case 2:
       return (
         state.partner1Name.trim().length > 0 &&
-        state.partner2Name.trim().length > 0 &&
+        (state.roleGroup === 'C' || state.partner2Name.trim().length > 0) &&
         state.togetherDuration.trim().length > 0 &&
         state.howTheyMet.trim().length > 0
       );
@@ -296,11 +309,27 @@ function Step2({
   state: FormState;
   dispatch: React.Dispatch<Action>;
 }) {
+  const g = state.roleGroup;
+
+  const p1Label =
+    g === 'B' ? "What's your child's name?" :
+    g === 'C' ? "What's your partner's name?" :
+    "Who are you closest to?";
+
+  const p2Label =
+    g === 'B' ? "And their partner's name?" : "And their partner's name?";
+
+  const durationLabel =
+    g === 'C' ? 'How long have you been together?' : 'How long have they been together?';
+
+  const metLabel =
+    g === 'C' ? 'How did you meet?' : 'How did they meet?';
+
   return (
     <div className="sw-q-step">
       <h1 className="sw-q-heading">Tell us about the lovebirds.</h1>
       <div className="sw-q-fields">
-        <Field label="Their name (the one you're closest to)">
+        <Field label={p1Label}>
           <input
             className="sw-q-input"
             type="text"
@@ -309,16 +338,20 @@ function Step2({
             onChange={set(dispatch, 'partner1Name')}
           />
         </Field>
-        <Field label="Their partner's name">
-          <input
-            className="sw-q-input"
-            type="text"
-            placeholder="e.g. Alex"
-            value={state.partner2Name}
-            onChange={set(dispatch, 'partner2Name')}
-          />
-        </Field>
-        <Field label="How long have they been together?">
+
+        {g !== 'C' && (
+          <Field label={p2Label}>
+            <input
+              className="sw-q-input"
+              type="text"
+              placeholder="e.g. Alex"
+              value={state.partner2Name}
+              onChange={set(dispatch, 'partner2Name')}
+            />
+          </Field>
+        )}
+
+        <Field label={durationLabel}>
           <input
             className="sw-q-input"
             type="text"
@@ -327,7 +360,7 @@ function Step2({
             onChange={set(dispatch, 'togetherDuration')}
           />
         </Field>
-        <Field label="How did they meet?">
+        <Field label={metLabel}>
           <input
             className="sw-q-input"
             type="text"

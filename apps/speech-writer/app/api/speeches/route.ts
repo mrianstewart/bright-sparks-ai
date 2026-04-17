@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
   ].filter((s) => typeof s.content === 'string' && s.content.trim().length > 0);
 
   const relationshipMeta = JSON.stringify({
+    roleGroup: body.roleGroup,
     howTheyMet: body.howTheyMet,
     togetherDuration: body.togetherDuration,
     weddingDate: body.weddingDate,
