@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { SpeechQuestionnaire } from './SpeechQuestionnaire';
 
 export const metadata: Metadata = {
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 export default function CreateSpeechPage() {
   return (
     <main>
-      <SpeechQuestionnaire />
+      <Suspense fallback={null}>
+        <SpeechQuestionnaire />
+      </Suspense>
     </main>
   );
 }

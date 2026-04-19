@@ -25,13 +25,24 @@ export async function POST(req: NextRequest) {
 
   const relationshipMeta = JSON.stringify({
     roleGroup: body.roleGroup,
+    siblingOf: body.siblingOf,
+    friendOf: body.friendOf,
     howTheyMet: body.howTheyMet,
     togetherDuration: body.togetherDuration,
     weddingDate: body.weddingDate,
+    // Group A / D
     howYouKnow: body.howYouKnow,
     knownDuration: body.knownDuration,
     wordForPartner: body.wordForPartner,
     wordForRelationship: body.wordForRelationship,
+    // Group B (parents)
+    wordForPartnerAsChild: body.wordForPartnerAsChild,
+    wordForPartnerNow: body.wordForPartnerNow,
+    wordForPartnerWith2: body.wordForPartnerWith2,
+    familyMessage: body.familyMessage,
+    // Group C (bride/groom)
+    whatNobodySees: body.whatNobodySees,
+    whoToThank: body.whoToThank,
   });
 
   const additionalNotes = [

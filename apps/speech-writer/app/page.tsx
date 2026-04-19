@@ -121,7 +121,7 @@ export default function SpeechWriterPage() {
             AI-powered speech writing for best men, maids of honour, parents,
             and anyone who&apos;d rather face a firing squad than a microphone.
           </p>
-          <Link href="/speech-writer/create" className="sw-hero__cta">
+          <Link href="/create" className="sw-hero__cta">
             Write my speech →
           </Link>
           <p className="sw-hero__trust">
@@ -171,7 +171,7 @@ export default function SpeechWriterPage() {
                   ))}
                 </ul>
                 <Link
-                  href={`/speech-writer/create?tier=${plan.tier}`}
+                  href={`/create?tier=${plan.tier}`}
                   className="sw-plan__cta"
                 >
                   {plan.cta}

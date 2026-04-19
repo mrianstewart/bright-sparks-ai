@@ -54,7 +54,7 @@ export default async function CheckoutPage({
           We&apos;ll email you a link to access your speech once payment is live.
         </p>
         <Link
-          href="/speech-writer"
+          href="/"
           style={{
             display: 'inline-block',
             background: 'var(--green)',

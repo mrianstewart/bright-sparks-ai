@@ -31,18 +31,17 @@ export interface StoryInput {
 }
 
 export interface SpeechSection {
-  key: string;
-  heading: string;
+  id: string;
+  title: string;
   content: string;
-  word_count: number;
-  estimated_seconds: number;
 }
 
 export interface SpeechDraft {
-  index: number;
-  style: string;
+  id: number;
+  emphasis: string;
+  title: string;
   sections: SpeechSection[];
-  total_word_count: number;
+  word_count: number;
   estimated_minutes: number;
 }
 

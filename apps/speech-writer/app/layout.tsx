@@ -3,6 +3,7 @@ import { Sora, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
+import { HeaderCta } from "./HeaderCta";
 
 const sora = Sora({
   variable: "--font-head",
@@ -56,9 +57,7 @@ export default function SpeechWriterLayout({ children }: { children: React.React
               </svg>
               Bright Sparks AI
             </Link>
-            <Link href="/speech-writer/create" className="sw-header__cta">
-              Write my speech →
-            </Link>
+            <HeaderCta />
           </div>
         </header>
 
