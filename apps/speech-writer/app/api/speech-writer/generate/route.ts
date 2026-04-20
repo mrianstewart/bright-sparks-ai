@@ -335,7 +335,12 @@ function buildUserPrompt(speech: Record<string, unknown>): string {
   }
 
   lines.push('');
-  lines.push('Write 3 different versions. Draft 1: lead with the strongest emotional moment. Draft 2: lead with the funniest story. Draft 3: lead with the speaker\'s personal connection.');
+  const draftCount = (speech.tier as string) === 'single' ? 1 : 3;
+  if (draftCount === 1) {
+    lines.push('Write 1 version. Lead with the strongest emotional moment and weave in humour naturally.');
+  } else {
+    lines.push('Write 3 different versions. Draft 1: lead with the strongest emotional moment. Draft 2: lead with the funniest story. Draft 3: lead with the speaker\'s personal connection.');
+  }
 
   return lines.join('\n');
 }
@@ -348,7 +353,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { access_token } = body;
+  const { access_token, bypass } = body;
   if (typeof access_token !== 'string' || !access_token) {
     return NextResponse.json({ error: 'access_token is required' }, { status: 400 });
   }
@@ -364,7 +369,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Speech not found' }, { status: 404 });
   }
 
-  // Payment verification skipped — will be added with Stripe
+  // Payment check — bypass only in development
+  const isDev = process.env.NODE_ENV !== 'production';
+  const bypassAllowed = isDev && bypass === true;
+  const isPaid = speech.stripe_payment_status === 'paid' && speech.payment_completed_at != null;
+
+  if (!isPaid && !bypassAllowed) {
+    return NextResponse.json({ error: 'Payment required' }, { status: 403 });
+  }
 
   const systemPrompt = buildSystemPrompt(speech);
   const userPrompt = buildUserPrompt(speech);

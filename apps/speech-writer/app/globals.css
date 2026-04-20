@@ -1263,6 +1263,231 @@ h1, h2, h3, h4 {
 .sw-review-legal a:hover { color: var(--text); }
 
 /* ══════════════════════════════════════════════════════════
+   CHECKOUT — /checkout/[token]
+   ══════════════════════════════════════════════════════════ */
+
+.co-main {
+  min-height: 100vh;
+  padding-top: calc(var(--header-h) + 3rem);
+  padding-bottom: 5rem;
+}
+
+.co-container {
+  max-width: 600px;
+}
+
+/* ── Header ───────────────────────────────────── */
+.co-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.co-header__ornament {
+  font-size: 1.25rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  letter-spacing: 0.2em;
+}
+
+.co-header__heading {
+  font-family: var(--font-head);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  margin-bottom: 0.625rem;
+}
+
+.co-header__sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ── Plan cards ───────────────────────────────── */
+.co-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.co-plan {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 1.25rem 1.375rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+}
+
+.co-plan:hover {
+  border-color: rgba(45, 87, 68, 0.4);
+}
+
+.co-plan--selected {
+  border-color: var(--green);
+  background: rgba(45, 87, 68, 0.04);
+  box-shadow: 0 0 0 3px rgba(45, 87, 68, 0.08);
+}
+
+.co-plan--featured {
+  border-color: var(--green);
+}
+
+.co-plan__badge {
+  position: absolute;
+  top: -11px;
+  left: 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--green);
+  color: #FEFCF7;
+  padding: 0.2rem 0.625rem;
+  border-radius: 20px;
+}
+
+/* Radio button */
+.co-plan__radio {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: border-color 0.18s;
+}
+
+.co-plan--selected .co-plan__radio {
+  border-color: var(--green);
+}
+
+.co-plan__radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  transform: scale(0);
+  transition: transform 0.15s;
+}
+
+.co-plan--selected .co-plan__radio-dot {
+  transform: scale(1);
+}
+
+.co-plan__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.co-plan__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.625rem;
+}
+
+.co-plan__name {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.co-plan__price {
+  font-family: var(--font-head);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.co-plan__features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.co-plan__feature {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.co-plan__tick {
+  color: var(--green);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ── CTA ──────────────────────────────────────── */
+.co-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.co-pay-btn {
+  width: 100%;
+  background: var(--green);
+  color: #FEFCF7;
+  font-family: var(--font-head);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: var(--radius);
+  transition: background 0.2s;
+  letter-spacing: -0.01em;
+}
+
+.co-pay-btn:hover:not(:disabled) { background: var(--green-hover); }
+
+.co-pay-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.co-error {
+  font-size: 0.875rem;
+  color: #c0392b;
+  text-align: center;
+}
+
+.co-trust {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.co-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.co-trust__sep {
+  color: var(--border);
+}
+
+/* ══════════════════════════════════════════════════════════
    SPEECH VIEWER — /[token]
    ══════════════════════════════════════════════════════════ */
 
@@ -1548,8 +1773,9 @@ h1, h2, h3, h4 {
 
 .sp-footer__expiry,
 .sp-footer__bookmark {
-  font-size: 0.875rem;
-  color: var(--text-muted);
+  font-size: 0.9375rem;
+  color: var(--text);
+  opacity: 0.75;
 }
 
 .sp-footer__email {
@@ -1558,6 +1784,40 @@ h1, h2, h3, h4 {
   background: var(--bg-alt);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+}
+
+/* Email form overrides for light background context */
+.sp-footer__email .sw-email-form__row {
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+.sp-footer__email .sw-email-form__row:focus-within {
+  border-color: var(--green);
+}
+
+.sp-footer__email .sw-email-form__input {
+  color: var(--text);
+}
+
+.sp-footer__email .sw-email-form__input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.sp-footer__email .sw-email-form__note {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.sp-footer__email .sw-email-form__success {
+  color: var(--green);
+  background: rgba(45, 87, 68, 0.08);
+  border-color: rgba(45, 87, 68, 0.25);
+}
+
+.sp-footer__email .sw-email-form__error {
+  color: #c0392b;
 }
 
 .sp-footer__email-heading {
@@ -1650,6 +1910,30 @@ h1, h2, h3, h4 {
 
 .sp-action__lock {
   font-size: 0.75rem;
+}
+
+.sp-action--upgrade {
+  color: var(--gold);
+  border: 1.5px solid rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.06);
+  text-decoration: none;
+}
+
+.sp-action--upgrade:hover {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--gold);
+}
+
+.sp-action__upgrade-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--gold);
+  color: #FEFCF7;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 /* ── Presentation mode ────────────────────────── */

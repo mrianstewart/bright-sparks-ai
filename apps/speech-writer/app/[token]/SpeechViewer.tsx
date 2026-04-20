@@ -333,13 +333,13 @@ export function SpeechViewer({
               {editMode ? 'Done editing' : 'Edit sections'}
             </button>
           ) : (
-            <button className="sp-action sp-action--locked" disabled title="Available on Full Package and above">
+            <a href="https://brightsparks.ai/speech-writer/create" className="sp-action sp-action--upgrade" title="Edit sections, regenerate parts, and adjust tone">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M11 2.5a1.5 1.5 0 012.12 2.12L5.5 12.25l-3 .75.75-3L11 2.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               Edit sections
-              <span className="sp-action__lock">🔒</span>
-            </button>
+              <span className="sp-action__upgrade-badge">Full Package</span>
+            </a>
           )}
 
           {canRehearse ? (
@@ -351,14 +351,14 @@ export function SpeechViewer({
               Rehearsal mode
             </button>
           ) : (
-            <button className="sp-action sp-action--locked" disabled title="Available on Premium">
+            <a href="https://brightsparks.ai/speech-writer/create" className="sp-action sp-action--upgrade" title="Rehearsal mode with timing and delivery coaching">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
                 <path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/>
               </svg>
               Rehearsal mode
-              <span className="sp-action__lock">🔒</span>
-            </button>
+              <span className="sp-action__upgrade-badge">Premium</span>
+            </a>
           )}
         </div>
       </div>

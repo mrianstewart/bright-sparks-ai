@@ -1306,7 +1306,7 @@ export function SpeechQuestionnaire() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Something went wrong');
-      router.push(`/generating?access_token=${data.access_token}`);
+      router.push(`/checkout/${data.access_token}`);
     } catch (err) {
       setSubmitError(
         err instanceof Error

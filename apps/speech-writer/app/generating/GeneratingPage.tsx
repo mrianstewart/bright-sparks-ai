@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const MESSAGES = [
@@ -19,31 +19,71 @@ const MESSAGES = [
   'Almost there — putting the finishing touches on...',
 ];
 
+type Phase = 'confirming' | 'generating' | 'error';
+
 export function GeneratingPage() {
   const router = useRouter();
   const params = useSearchParams();
   const accessToken = params.get('access_token') ?? '';
-  const speechId = params.get('speech_id') ?? '';
+  const sessionId = params.get('session_id');
+  const bypass = params.get('bypass') === 'true';
 
+  const [phase, setPhase] = useState<Phase>(sessionId ? 'confirming' : 'generating');
   const [msgIndex, setMsgIndex] = useState(0);
-  const [status, setStatus] = useState<'loading' | 'error'>('loading');
   const [errorMsg, setErrorMsg] = useState('');
   const [retryCount, setRetryCount] = useState(0);
 
-  // API call — re-runs on retry
+  // Poll for payment confirmation, then kick off generation
   useEffect(() => {
     if (!accessToken) return;
     let cancelled = false;
-    setStatus('loading');
-    setErrorMsg('');
-    setMsgIndex(0);
+
+    async function pollPayment() {
+      const MAX_POLLS = 15;
+      const INTERVAL = 1000;
+
+      for (let i = 0; i < MAX_POLLS; i++) {
+        if (cancelled) return;
+        try {
+          const sessionParam = sessionId ? `&session_id=${sessionId}` : '';
+          const res = await fetch(
+            `/speech-writer/api/speech-writer/payment-status?access_token=${accessToken}${sessionParam}`
+          );
+          const data = await res.json();
+          if (data.paid) return true;
+        } catch {
+          // network blip — keep polling
+        }
+        await new Promise(r => setTimeout(r, INTERVAL));
+      }
+      return false; // timed out
+    }
 
     async function run() {
+      setErrorMsg('');
+      setMsgIndex(0);
+
+      // If we have a session_id the user came from Stripe — wait for webhook
+      if (sessionId && !bypass) {
+        const paid = await pollPayment();
+        if (cancelled) return;
+        if (!paid) {
+          setPhase('error');
+          setErrorMsg(
+            "We couldn't confirm your payment. If you were charged, please contact us and we'll sort it immediately."
+          );
+          return;
+        }
+      }
+
+      if (cancelled) return;
+      setPhase('generating');
+
       try {
         const res = await fetch('/speech-writer/api/speech-writer/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ access_token: accessToken, speech_id: speechId }),
+          body: JSON.stringify({ access_token: accessToken, bypass }),
         });
         if (cancelled) return;
         const data = await res.json();
@@ -51,7 +91,7 @@ export function GeneratingPage() {
         router.push(`/${accessToken}`);
       } catch (err) {
         if (cancelled) return;
-        setStatus('error');
+        setPhase('error');
         setErrorMsg(err instanceof Error ? err.message : 'Something went wrong');
       }
     }
@@ -61,29 +101,29 @@ export function GeneratingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retryCount]);
 
-  // Cycle messages every 7s while loading
+  // Cycle messages every 5s while generating
   useEffect(() => {
-    if (status !== 'loading') return;
+    if (phase !== 'generating') return;
     const id = setInterval(() => setMsgIndex(i => (i + 1) % MESSAGES.length), 5000);
     return () => clearInterval(id);
-  }, [status]);
+  }, [phase]);
 
-  if (status === 'error') {
+  if (phase === 'error') {
     return (
       <main className="sw-gen-main">
         <div className="sw-gen-card">
           <div className="sw-gen-error-icon">✦</div>
           <h1 className="sw-gen-heading">Something went wrong</h1>
           <p className="sw-gen-error-body">
-            Something went wrong generating your speech. Don&apos;t worry — your answers are saved.
+            {errorMsg || "Something went wrong generating your speech. Don't worry — your answers are saved."}
           </p>
-          {errorMsg && (
-            <p className="sw-gen-error-detail">{errorMsg}</p>
-          )}
           <button
             type="button"
             className="sw-gen-retry"
-            onClick={() => setRetryCount(c => c + 1)}
+            onClick={() => {
+              setPhase(sessionId && !bypass ? 'confirming' : 'generating');
+              setRetryCount(c => c + 1);
+            }}
           >
             Try again
           </button>
@@ -91,6 +131,21 @@ export function GeneratingPage() {
             Still having trouble?{' '}
             <a href="mailto:hello@brightsparks.ai">Contact us</a>
           </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (phase === 'confirming') {
+    return (
+      <main className="sw-gen-main">
+        <div className="sw-gen-card">
+          <h1 className="sw-gen-heading">Confirming your payment…</h1>
+          <p className="sw-gen-message">Just a moment while we confirm your payment with Stripe.</p>
+          <p className="sw-gen-time">This usually takes a second or two</p>
+          <div className="sw-gen-dots" aria-hidden="true">
+            <span /><span /><span />
+          </div>
         </div>
       </main>
     );
