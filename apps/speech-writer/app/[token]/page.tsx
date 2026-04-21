@@ -58,6 +58,9 @@ export default async function SpeechPage({
       initialSelectedDraft={speech.selected_draft ?? 0}
       initialEditedSections={speech.edited_sections ?? {}}
       expiryDate={expiryStr}
+      coupleName1={speech.couple_name_1 ?? ''}
+      coupleName2={speech.couple_name_2 ?? ''}
+      speakerRole={speech.speaker_role ?? ''}
     />
   );
 }

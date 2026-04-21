@@ -34,8 +34,12 @@ export async function POST(req: NextRequest) {
     .map((s: { title: string; content: string }) => `## ${s.title}\n${s.content}`)
     .join('\n\n');
 
-  const toneInstruction = tone
-    ? `\n\nIMPORTANT: Adjust the tone to make this section ${tone}. Keep the same subject matter and key facts.`
+  const toneInstruction = tone === 'shorter'
+    ? `\n\nIMPORTANT: Rewrite this section to be significantly shorter — cut it by roughly a third. Preserve the key facts and emotional beats; remove padding, repetition, and anything non-essential.`
+    : tone === 'longer'
+    ? `\n\nIMPORTANT: Rewrite this section to be significantly longer — expand it by roughly a third. Add more specific detail, a richer description, or a fuller emotional arc. Do not pad with filler.`
+    : tone
+    ? `\n\nIMPORTANT: Rewrite this section to be ${tone}. Keep the same subject matter and key facts.`
     : '';
 
   const prompt = `You are rewriting a single section of a wedding speech.

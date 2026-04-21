@@ -160,7 +160,7 @@ export function GeneratingPage() {
           {MESSAGES[msgIndex]}
         </p>
 
-        <p className="sw-gen-time">This usually takes about a minute</p>
+        <p className="sw-gen-time">This usually takes about two minutes</p>
 
         <div className="sw-gen-progress" role="progressbar" aria-label="Generating speech">
           <div key={retryCount} className="sw-gen-progress__fill" />

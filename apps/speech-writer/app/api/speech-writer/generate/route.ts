@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
+import { buildConfirmationEmail } from '@/lib/emails/confirmationEmail';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -433,6 +435,32 @@ export async function POST(req: NextRequest) {
 
   if (eventError) {
     console.error('Event insert error (non-fatal):', eventError);
+  }
+
+  // Send confirmation email now that speech is ready (fire-and-forget)
+  const customerEmail = speech.email;
+  if (customerEmail) {
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY!.trim());
+      const { subject, html } = buildConfirmationEmail({
+        email: customerEmail,
+        accessToken: access_token,
+        tier: speech.tier ?? 'single',
+      });
+      const { data, error: sendError } = await resend.emails.send({
+        from: 'Bright Sparks AI <hello@brightsparks.ai>',
+        to: customerEmail,
+        subject,
+        html,
+      });
+      if (sendError) {
+        console.error('Confirmation email send error:', sendError);
+      } else {
+        console.log('Confirmation email sent:', data?.id, 'to', customerEmail);
+      }
+    } catch (emailErr) {
+      console.error('Confirmation email failed (non-fatal):', emailErr);
+    }
   }
 
   return NextResponse.json({ drafts }, { status: 200 });

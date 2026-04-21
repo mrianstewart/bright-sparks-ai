@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { EmailCaptureForm } from './EmailCaptureForm';
+import { LostLinkForm } from './LostLinkForm';
 
 export const metadata: Metadata = {
   title: { absolute: 'AI Wedding Speech Writer UK | Bright Sparks AI' },
@@ -121,9 +122,14 @@ export default function SpeechWriterPage() {
             AI-powered speech writing for best men, maids of honour, parents,
             and anyone who&apos;d rather face a firing squad than a microphone.
           </p>
-          <Link href="/create" className="sw-hero__cta">
-            Write my speech →
-          </Link>
+          <div className="sw-hero__actions">
+            <Link href="/create" className="sw-hero__cta">
+              Write my speech →
+            </Link>
+            <a href="#lost-link" className="sw-hero__recover">
+              Already purchased? Recover my speech
+            </a>
+          </div>
           <p className="sw-hero__trust">
             Starts from £14.99 &middot; PDF export included &middot; Ready in minutes
           </p>
@@ -204,6 +210,7 @@ export default function SpeechWriterPage() {
           <h2>Not ready yet? Get free wedding speech tips.</h2>
           <p>Structure, humour, delivery — our best advice, free, with no obligation.</p>
           <EmailCaptureForm kitFormId={KIT_FORM_ID} />
+          <LostLinkForm />
         </div>
       </section>
 

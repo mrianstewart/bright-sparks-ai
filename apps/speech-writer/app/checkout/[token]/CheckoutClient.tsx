@@ -113,29 +113,19 @@ export function CheckoutClient({
             <button
               key={plan.tier}
               type="button"
-              className={`co-plan${selectedTier === plan.tier ? ' co-plan--selected' : ''}${plan.tier === 'full' ? ' co-plan--featured' : ''}`}
+              className={`co-plan${plan.tier === 'full' ? ' co-plan--featured' : ''}${selectedTier === plan.tier ? ' co-plan--selected' : ''}`}
               onClick={() => setSelectedTier(plan.tier)}
             >
-              {plan.badge && (
-                <span className="co-plan__badge">{plan.badge}</span>
-              )}
-              <div className="co-plan__radio" aria-hidden="true">
-                <div className="co-plan__radio-dot" />
-              </div>
-              <div className="co-plan__body">
-                <div className="co-plan__top">
-                  <span className="co-plan__name">{plan.name}</span>
-                  <span className="co-plan__price">{plan.price}</span>
-                </div>
-                <ul className="co-plan__features">
-                  {plan.features.map((f) => (
-                    <li key={f} className="co-plan__feature">
-                      <span className="co-plan__tick" aria-hidden="true">✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {plan.badge && <span className="co-plan__badge">{plan.badge}</span>}
+              <p className="co-plan__name">{plan.name}</p>
+              <p className="co-plan__price">{plan.price}</p>
+              <p className="co-plan__period">one-time payment</p>
+              <hr className="co-plan__divider" />
+              <ul className="co-plan__features">
+                {plan.features.map((f) => (
+                  <li key={f} className="co-plan__feature">{f}</li>
+                ))}
+              </ul>
             </button>
           ))}
         </div>

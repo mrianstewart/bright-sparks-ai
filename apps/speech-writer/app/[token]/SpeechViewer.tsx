@@ -14,6 +14,9 @@ interface Props {
   initialSelectedDraft: number;
   initialEditedSections: Record<string, string>;
   expiryDate: string;
+  coupleName1: string;
+  coupleName2: string;
+  speakerRole: string;
 }
 
 type ToneOption = 'funnier' | 'more sincere' | 'shorter' | 'longer';
@@ -33,6 +36,9 @@ export function SpeechViewer({
   initialSelectedDraft,
   initialEditedSections,
   expiryDate,
+  coupleName1,
+  coupleName2,
+  speakerRole,
 }: Props) {
   const [activeDraft, setActiveDraft] = useState(initialSelectedDraft);
   const [editMode, setEditMode] = useState(false);
@@ -44,6 +50,7 @@ export function SpeechViewer({
   const [regenError, setRegenError] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [pdfState, setPdfState] = useState<'idle' | 'generating'>('idle');
   const printRef = useRef<HTMLDivElement>(null);
 
   const draft = drafts[activeDraft] ?? drafts[0];
@@ -133,8 +140,43 @@ export function SpeechViewer({
     }
   }
 
-  function exportPDF() {
-    window.print();
+  async function exportPDF() {
+    if (pdfState === 'generating') return;
+    setPdfState('generating');
+    try {
+      const { generateSpeechPdf } = await import('./generatePdf');
+      const blob = await generateSpeechPdf({
+        draft,
+        coupleName1,
+        coupleName2,
+        speakerRole,
+        editedSections,
+        draftIndex: activeDraft,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const names = [coupleName1, coupleName2]
+        .filter(Boolean)
+        .join('-')
+        .replace(/\s+/g, '-')
+        .toLowerCase();
+      a.download = `wedding-speech-${names || 'draft'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      // Track export event (fire-and-forget)
+      fetch('/speech-writer/api/speech-writer/track-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: accessToken, speech_id: speechId, event_type: 'exported' }),
+      }).catch(() => {});
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+    } finally {
+      setPdfState('idle');
+    }
   }
 
   if (presentationMode) {
@@ -172,6 +214,7 @@ export function SpeechViewer({
                 className={`sp-tab${activeDraft === i ? ' sp-tab--active' : ''}`}
                 onClick={() => setActiveDraft(i)}
               >
+                <span className="sp-tab__version">Version {i + 1}</span>
                 <span className="sp-tab__title">{d.title}</span>
                 <span className="sp-tab__emphasis">{d.emphasis}</span>
               </button>
@@ -296,11 +339,11 @@ export function SpeechViewer({
       {/* ── Sticky action bar ──────────────────────── */}
       <div className="sp-action-bar">
         <div className="sp-action-bar__inner">
-          <button className="sp-action sp-action--secondary" onClick={exportPDF}>
+          <button className="sp-action sp-action--secondary" onClick={exportPDF} disabled={pdfState === 'generating'}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 12h10M8 2v8M5 7l3 3 3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Export PDF
+            {pdfState === 'generating' ? 'Generating…' : 'Export PDF'}
           </button>
 
           <button className="sp-action sp-action--secondary" onClick={copyToClipboard}>

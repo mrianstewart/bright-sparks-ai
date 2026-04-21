@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { supabase } from '@/lib/supabase';
+import { tagKitSubscriber } from '@/lib/kit';
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(
       rawBody,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!.trim()
     );
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
@@ -26,6 +27,13 @@ export async function POST(req: NextRequest) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const { speech_id, access_token, tier } = session.metadata ?? {};
+    console.log('Webhook: checkout.session.completed', {
+      session_id: session.id,
+      access_token,
+      tier,
+      customer_email: session.customer_email,
+      customer_details_email: session.customer_details?.email,
+    });
 
     if (access_token) {
       const { error: updateError } = await (supabase as any)
@@ -57,6 +65,18 @@ export async function POST(req: NextRequest) {
 
       if (eventError) {
         console.error('Event insert error (non-fatal):', eventError);
+      }
+
+      // Tag subscriber in Kit
+      const customerEmail = session.customer_details?.email ?? session.customer_email;
+      if (customerEmail) {
+        const kitTags = ['speech-writer-customer', `tier-${tier ?? 'single'}`];
+        try {
+          await tagKitSubscriber(customerEmail, kitTags);
+          console.log('Kit tagging succeeded for', customerEmail);
+        } catch (err) {
+          console.error('Kit tagging failed (non-fatal):', err);
+        }
       }
     }
   }
